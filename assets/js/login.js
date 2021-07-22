@@ -1,6 +1,6 @@
 $(function() {
+    // 1. 切换注册 - 登录
     (function() {
-        // 1. 切换注册 - 登录
         $('#link_reg').on('click', function() {
             $('.login-box').hide();
             $('.reg-box').show();
@@ -9,10 +9,11 @@ $(function() {
             $('.reg-box').hide();
             $('.login-box').show();
         });
+
     })();
 
+    // 2. 表单验证
     (function() {
-        // 2. 表单验证
         var form = layui.form;
         form.verify({
             pwd: [
@@ -29,4 +30,42 @@ $(function() {
             }
         });
     })();
+
+    // 3. 监听注册表单的提交事件
+    (function() {
+        var layer = layui.layer;
+        $('#form_reg').on('submit', function(e) {
+            e.preventDefault();
+            var data = { username: $('#form_reg [name=user]').val(), password: $('#form_reg [name=psw]').val() };
+            $.post('http://api-breakingnews-web.itheima.net/api/reguser', data, function(res) {
+                if (res.status != 0) {
+                    // return console.log(res.message);
+                    return layer.msg(res.message);
+                }
+                layer.msg('注册成功，请登录！');
+                return $('#link_login').click();
+            });
+        });
+    })();
+
+    // 4. 监听登录表单提交事件
+    $('#form_login').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            method: 'POST',
+            url: 'http://api-breakingnews-web.itheima.net/api/login',
+            // 快速获取表单的数据
+            data: $(this).serialize(),
+            success: function(res) {
+                if (res.status !== 0) {
+                    return layer.msg('登录失败！');
+                }
+                console.log(res.token);
+                layer.msg('登录成功！');
+                localStorage.setItem('token', res.token)
+                location.href = './index.html';
+            }
+        });
+    });
+
 });
