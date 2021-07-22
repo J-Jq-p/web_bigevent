@@ -23,7 +23,7 @@ $(function() {
                 // 通过形参拿到确认密码框中的内容
                 // 还需要拿到密码框的内容
                 // 然后进行比较 如果不一样 则 return 一个提示消息
-                var psw = $('.reg-box [name=psw]').val();
+                var psw = $('.reg-box [name=password]').val();
                 if (psw !== value) {
                     return '两次密码不一致';
                 }
@@ -36,8 +36,11 @@ $(function() {
         var layer = layui.layer;
         $('#form_reg').on('submit', function(e) {
             e.preventDefault();
-            var data = { username: $('#form_reg [name=user]').val(), password: $('#form_reg [name=psw]').val() };
-            $.post('http://api-breakingnews-web.itheima.net/api/reguser', data, function(res) {
+            var data = {
+                username: $('#form_reg [name=username]').val(),
+                password: $('#form_reg [name=password]').val()
+            };
+            $.post('api/reguser', data, function(res) {
                 if (res.status != 0) {
                     // return console.log(res.message);
                     return layer.msg(res.message);
@@ -53,7 +56,7 @@ $(function() {
         e.preventDefault();
         $.ajax({
             method: 'POST',
-            url: 'http://api-breakingnews-web.itheima.net/api/login',
+            url: 'api/login',
             // 快速获取表单的数据
             data: $(this).serialize(),
             success: function(res) {
